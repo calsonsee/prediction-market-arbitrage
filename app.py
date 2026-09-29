@@ -1,6 +1,6 @@
 import json
 from concurrent.futures import ThreadPoolExecutor
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 
 import pandas as pd
 import requests
@@ -66,7 +66,7 @@ def fetch_live_snapshots(limit: int, per_event: int = 3) -> tuple[list[MarketSna
 
 
 def demo_polymarket_snapshot() -> MarketSnapshot:
-    now = datetime.now(timezone.utc)
+    now = datetime.now(timezone(timedelta(hours=8)))
     lv = OrderBookLevel
     return MarketSnapshot(
         venue="polymarket",
@@ -107,10 +107,13 @@ head_l.title("ARB TERMINAL")
 head_l.caption("POLYMARKET × KALSHI · NBA MARKETS · PREDICTION-MARKET ARBITRAGE")
 
 
+SGT = timezone(timedelta(hours=8))
+
+
 @st.fragment(run_every=1)
 def clock() -> None:
-    now = datetime.now(timezone.utc)
-    st.markdown(f'<div class="clock">UTC<br><b>{now:%Y-%m-%d %H:%M:%S}</b></div>', unsafe_allow_html=True)
+    now = datetime.now(SGT)
+    st.markdown(f'<div class="clock">SGT<br><b>{now:%Y-%m-%d %H:%M:%S}</b></div>', unsafe_allow_html=True)
 
 
 with head_r:
@@ -184,7 +187,7 @@ def dashboard() -> None:
                 "E[profit] $": st.column_config.NumberColumn(format="$%.2f"),
             },
         )
-    st.caption(f"Last refresh {datetime.now(timezone.utc):%H:%M:%S} UTC · {scanned} scanned · {failed} failed to load"
+    st.caption(f"Last refresh {datetime.now(SGT):%H:%M:%S} SGT · {scanned} scanned · {failed} failed to load"
                " · Kalshi data is mock (no API key)")
 
 
